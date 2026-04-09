@@ -1,54 +1,26 @@
-- name: Ensure required packages are installed
-  apt:
-    name: "{{ powerdns_lightningstream_golang_packages }}"
+---
+# Install lightningstream from packages.sol1.net apt repository
+# The package provides /usr/bin/lightningstream and a systemd service
+
+- name: Install lightningstream package
+  ansible.builtin.apt:
+    name: lightningstream
     state: present
-  become: true
-  when: ansible_os_family == 'Debian'
+    update_cache: true
+    cache_valid_time: 3600
 
-- name: Download and install Go {{ powerdns_lightningstream_golang_version }}
-  block:
-    - name: Remove any existing Go installation
-      file:
-        path: /usr/local/go
-        state: absent
-      become: true
-
-    - name: Download Go tarball
-      get_url:
-        url: "https://go.dev/dl/{{ powerdns_lightningstream_golang_tarball }}"
-        dest: "/tmp/{{ powerdns_lightningstream_golang_tarball }}"
-        mode: '0644'
-
-    - name: Extract Go
-      unarchive:
-        src: "/tmp/{{ powerdns_lightningstream_golang_tarball }}"
-        dest: /usr/local
-        remote_src: yes
-      become: true
-
-    - name: Ensure Go is in the PATH
-      lineinfile:
-        path: /etc/profile.d/go.sh
-        line: 'export PATH=$PATH:/usr/local/go/bin'
-        create: yes
-        mode: '0755'
-      become: true
-  when: ansible_os_family == 'Debian'
-
-- name: Clone lightningstream repository
-  git:
-    repo: "{{ powerdns_lightningstream_repo }}"
-    dest: "{{ powerdns_lightningstream_dest }}"
-    version: "{{ powerdns_lightningstream_version }}"
-    update: yes
-
-- name: Build lightningstream
-  shell: |
-    export PATH=$PATH:/usr/local/go/bin
-    cd {{ powerdns_lightningstream_dest }}
-    GOBIN={{ powerdns_lightningstream_install_path }} /usr/local/go/bin/go install ./cmd/lightningstream/
-  args:
-    executable: /bin/bash
-  environment:
-    CGO_ENABLED: "1"
+# Clean up artifacts from previous source-compiled installations
+- name: Stop old compiled lightningstream service if running from /opt
+  ansible.builtin.shell:
+    cmd: "systemctl stop lightningstream || true"
   changed_when: false
+  when: ansible_facts.services is not defined or true
+
+- name: Remove compiled lightningstream installation
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: absent
+  loop:
+    - /opt/lightningstream
+    - /etc/profile.d/go.sh
+    - /etc/systemd/system/lightningstream.service

@@ -1,42 +1,14 @@
-# Build config
-- name: Ensure /etc directory for lightningstream config exists
-  file:
-    path: /etc
-    state: directory
-    mode: '0755'
-
+---
 - name: Render lightningstream.yml config
-  template:
+  ansible.builtin.template:
     src: lightningstream.yml.j2
     dest: /etc/lightningstream.yml
     mode: '0644'
-
-# Setup systemd
-- name: Install systemd service for lightningstream
-  copy:
-    dest: /etc/systemd/system/lightningstream.service
-    mode: '0644'
-    content: |
-      [Unit]
-      Description=PowerDNS LightningStream
-      After=network.target
-
-      [Service]
-      Type=simple
-      User=pdns
-      Group=pdns
-      ExecStart={{ powerdns_lightningstream_install_path }}lightningstream --config /etc/lightningstream.yml sync
-      Restart=on-failure
-      RestartSec=20s
-      Environment=PATH=/usr/local/go/bin:/usr/bin:/bin
-
-      [Install]
-      WantedBy=multi-user.target
   notify: Reload systemd
 
-# start
 - name: Enable and start lightningstream
-  systemd:
+  ansible.builtin.systemd:
     name: lightningstream
-    enabled: yes
+    enabled: true
     state: started
+    daemon_reload: true
