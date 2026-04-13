@@ -9,8 +9,8 @@
       paths:
         - "{{ role_path }}/vars"
 
-- name: Build lightningstream
-  include_tasks: build.yml
+- name: Install lightningstream via packages
+  include_tasks: install.yml
 
 - name: Configure lightningstream
   include_tasks: configure.yml

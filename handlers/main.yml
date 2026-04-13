@@ -1,3 +1,9 @@
 - name: Reload systemd
   systemd:
-    daemon_reload: yes
+    daemon_reload: true
+
+- name: Restart lightningstream
+  ansible.builtin.systemd:
+    name: lightningstream
+    state: restarted
+    daemon_reload: true

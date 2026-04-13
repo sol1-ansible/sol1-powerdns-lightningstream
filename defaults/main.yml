@@ -1,11 +1,5 @@
 ---
-powerdns_lightningstream_repo: "https://github.com/PowerDNS/lightningstream.git"
-powerdns_lightningstream_version: "main"
-powerdns_lightningstream_dest: "/opt/lightningstream/src"
-powerdns_lightningstream_install_path: "/opt/lightningstream/"
-powerdns_lightningstream_golang_version: "1.24.3"
-powerdns_lightningstream_golang_tarball: "go{{ powerdns_lightningstream_golang_version }}.linux-amd64.tar.gz"  # Limited to amd64 at the moment
-
+powerdns_lightningstream_cleanup_compiled_installation: true
 
 powerdns_lightningstream_instance: "{{ ansible_hostname }}"
 powerdns_lightningstream_lmdbs:
@@ -36,6 +30,10 @@ powerdns_lightningstream_storage:
     interval: 15m
     must_keep_interval: 24h
     remove_old_instances_interval: 168h
+
+# powerdns_lightningstream_systemd_proxy: 
+#   http: "http://proxy.example.com:8080"
+#   https: "https://proxy.example.com:8080"
 
 # powerdns_lightningstream_http:
 #   address: ":8500"

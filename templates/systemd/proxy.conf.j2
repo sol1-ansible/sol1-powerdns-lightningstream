@@ -1,0 +1,9 @@
+{% if powerdns_lightningstream_systemd_proxy and (powerdns_lightningstream_systemd_proxy.http is defined or powerdns_lightningstream_systemd_proxy.https is defined) %}
+[Service]
+{% if powerdns_lightningstream_systemd_proxy.http is defined %}
+Environment="HTTP_PROXY={{ powerdns_lightningstream_systemd_proxy.http }}"
+{% endif %}
+{% if powerdns_lightningstream_systemd_proxy.https is defined %}
+Environment="HTTPS_PROXY={{ powerdns_lightningstream_systemd_proxy.https }}"
+{% endif %}
+{% endif %}

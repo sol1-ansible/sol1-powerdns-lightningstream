@@ -4,7 +4,30 @@
     src: lightningstream.yml.j2
     dest: /etc/lightningstream.yml
     mode: '0644'
-  notify: Reload systemd
+  notify: 
+   - Reload systemd
+   - Restart lightningstream
+
+- name: Create systemd drop-in for lightningstream proxy
+  when: powerdns_lightningstream_systemd_proxy and
+        (powerdns_lightningstream_systemd_proxy.http is defined or
+         powerdns_lightningstream_systemd_proxy.https is defined)
+  block:
+    - name: Ensure drop-in directory exists
+      ansible.builtin.file:
+        path: /etc/systemd/system/lightningstream.service.d
+        state: directory
+        mode: "0755"
+    - name: Configure lightningstream systemd proxy
+      ansible.builtin.template:
+        src: lightningstream_proxy.conf.j2
+        dest: /etc/systemd/system/lightningstream.service.d/proxy.conf
+        owner: root
+        group: root
+        mode: '0644'
+      notify: 
+      - Reload systemd
+      - Restart lightningstream
 
 - name: Enable and start lightningstream
   ansible.builtin.systemd:

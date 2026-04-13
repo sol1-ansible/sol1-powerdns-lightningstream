@@ -9,6 +9,7 @@
     update_cache: true
     cache_valid_time: 3600
 
+
 # Clean up artifacts from previous source-compiled installations
 - name: Stop old compiled lightningstream service if running from /opt
   ansible.builtin.shell:
@@ -24,3 +25,6 @@
     - /opt/lightningstream
     - /etc/profile.d/go.sh
     - /etc/systemd/system/lightningstream.service
+  when: 
+    - powerdns_lightningstream_cleanup_compiled_installation is defined 
+    - powerdns_lightningstream_cleanup_compiled_installation

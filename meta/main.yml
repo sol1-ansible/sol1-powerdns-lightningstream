@@ -1,2 +1,3 @@
 ---
-dependencies: []
+dependencies:
+  - role: sol1.packages_repo
