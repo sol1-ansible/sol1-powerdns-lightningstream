@@ -16,6 +16,13 @@ powerdns_lightningstream_lmdbs:
       no_subdir: true
       create: true
 
+# https://doc.powerdns.com/lightningstream/latest/configuration/index.html#sync-parameters
+powerdns_lightningstream_sync:
+  storage_poll_interval: 30s
+  lmdb_poll_interval: 15s
+
+# https://doc.powerdns.com/lightningstream/latest/configuration/index.html#s3-backend
+# Update marker settings = costs less
 powerdns_lightningstream_storage:
   type: s3
   options:
@@ -25,10 +32,13 @@ powerdns_lightningstream_storage:
     bucket: pdnsauth
     endpoint_url: http://203.0.113.0/
     create_bucket: false
+    use_update_marker: True                 
+    update_marker_force_list_interval: 15m  
+# smaller keep interval than the default for less snapshots
   cleanup:
     enabled: true
     interval: 15m
-    must_keep_interval: 24h
+    must_keep_interval: 4h
     remove_old_instances_interval: 168h
 
 # powerdns_lightningstream_systemd_proxy: 

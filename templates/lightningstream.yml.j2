@@ -15,6 +15,11 @@ lmdbs:
 {% endfor %}
 {% endfor %}
 
+# Sync settings
+{% for section, config in powerdns_lightningstream_sync.items() %}
+{{ section }}: {{ config }}
+{% endfor %}
+
 storage:
 {% for section, config in powerdns_lightningstream_storage.items() %}
 {% if section == "type" %}
