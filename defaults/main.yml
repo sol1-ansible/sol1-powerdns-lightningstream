@@ -22,7 +22,7 @@ powerdns_lightningstream_sync:
   lmdb_poll_interval: 15s
 
 # https://doc.powerdns.com/lightningstream/latest/configuration/index.html#s3-backend
-# Update marker settings = costs less
+# Update marker settings = costs less (not compatible with AWS bucket mirroring)
 powerdns_lightningstream_storage:
   type: s3
   options:
