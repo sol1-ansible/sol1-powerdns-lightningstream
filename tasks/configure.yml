@@ -21,7 +21,7 @@
 
     - name: Configure lightningstream systemd proxy
       ansible.builtin.template:
-        src: lightningstream_proxy.conf.j2
+        src: systemd/proxy.conf.j2
         dest: /etc/systemd/system/lightningstream.service.d/proxy.conf
         owner: root
         group: root
